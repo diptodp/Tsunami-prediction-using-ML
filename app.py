@@ -20,11 +20,11 @@ def home():
 
 @app.route('/predict', methods=['POST'])
 def index():
-    if request.method == "POST":
+     if request.method == "POST":
         data1 = request.form['significance']
         data2 = request.form['magnitudo']
-        data3 = request.form['longitude']
-        data4 = request.form['latitude']
+        data3 = request.form['latitude']
+        data4 = request.form['longitude']
         data5 = request.form['depth']
 
         data1 = float(data1)
@@ -55,8 +55,8 @@ def index():
                                prediction_text=prediction_text, 
                                significance=data1, 
                                magnitude=data2, 
-                               longitude=data3, 
-                               latitude=data4, 
+                               latitude=data3, 
+                               longitude=data4, 
                                depth=data5)
 
 if __name__ == '__main__':
