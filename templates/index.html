@@ -1,0 +1,162 @@
+<!-- templates/index.html -->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <link rel = "stylesheet" href = "http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.css" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        #map {
+            height: 200px;
+            margin-top: 10px;
+            
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #d1d9ff;
+
+        }
+
+        .container {
+
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .container h1 {
+            text-align: center;
+        }
+
+        /* Keyframes for the glow animation */
+        @keyframes glow {
+            from {
+                box-shadow: 0 0 5px rgba(93, 209, 199, 0.8);
+            }
+
+            to {
+                box-shadow: 0 0 10px rgb(14, 237, 245);
+            }
+        }
+
+        #helpDeskInfo {
+            display: none;
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #E3DAC9;
+            /* Adjust the background color as needed */
+            color: #000000;
+            border-radius: 5px;
+            text-align: center;
+        }
+
+        form {
+            margin-top: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        input {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 10px;
+            box-sizing: border-box;
+        }
+
+        button {
+            background-color: #4caf50;
+            color: #fff;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+    </style>
+    <title>Tsunami Prediction</title>
+</head>
+
+<body>
+    <div class="container">
+        <h1>Tsunami Prediction</h1>
+        <form action="{{url_for('index')}}" method="post">
+            <label for="significance">Significance:</label>
+            <input type="text" name="significance" required><br>
+
+            <label for="magnitude">Magnitude:</label>
+            <input type="text" name="magnitudo" required><br>
+
+            <label for="longitude">Longitude:</label>
+            <input type="text" name="longitude" required><br>
+
+            <label for="latitude">Latitude:</label>
+            <input type="text" name="latitude" required><br>
+
+            <label for="depth">Depth:</label>
+            <input type="text" name="depth" required><br>
+
+            <button type="submit">Predict</button>
+            <button type="button" style="background-color: #fd0404; color: #fff;" onclick="toggleHelpDesk()">Help
+                Desk</button>
+            <div id="helpDeskInfo">
+                <p>
+                <h2>Emergency Contact:</h2>
+                </p>
+                <p>Phone: 999</p>
+                <p>Email: info@bdpc.org.bd</p>
+                <!-- Map container for the user's current location -->
+
+                <div id="map"></div>
+            </div>
+
+        </form>
+
+        <p> <strong
+                style="color: #2b66fa;padding: 10px;background:none; border: none; border-radius: 5px; cursor: pointer; animation: glow 1s infinite alternate;">Prediction:</strong>
+            {{ prediction_text|safe}}</p>
+        {% if significance is defined %}
+        <p>Input values:</p>
+        <ul>
+            <li>Significance: {{ significance }}</li>
+            <li>Magnitude: {{ magnitude }}</li>
+            <li>Longitude: {{ longitude }}</li>
+            <li>Latitude: {{ latitude }}</li>
+            <li>Depth: {{ depth }}</li>
+        </ul>
+        {% endif %}
+    </div>
+
+    {% if flag %}
+        <div class="map" id ="map" style = "width: 600px; height: 400px;"></div>
+    {% endif %}
+    <script src = "http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.js"></script>
+    <script>
+        function toggleHelpDesk() {
+        var helpDeskInfo = document.getElementById("helpDeskInfo");
+        helpDeskInfo.style.display = (helpDeskInfo.style.display === "none") ? "block" : "none";
+        let mapOptions = {
+            center:['{{ latitude }}', '{{ longitude }}'],
+            zoom:10
+        }
+        
+        let map = new L.map('map' , mapOptions);
+
+        let layer = new L.TileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png');
+        map.addLayer(layer);
+
+        let marker = new L.Marker(['{{ latitude }}', '{{ longitude }}']);
+        marker.addTo(map);}
+        
+    </script>
+
+
+</body>
+
+</html>
