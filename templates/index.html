@@ -112,57 +112,49 @@
             <button type="button" style="background-color: #fd0404; color: #fff;" onclick="toggleHelpDesk()">Help
                 Desk</button>
             <div id="helpDeskInfo">
-                <p>
                 <h2>Emergency Contact:</h2>
-                </p>
                 <p>Phone: 999</p>
                 <p>Email: info@bdpc.org.bd</p>
-                <!-- Map container for the user's current location -->
-
-                <div id="map"></div>
             </div>
 
         </form>
 
-        <p> <strong
-                style="color: #2b66fa;padding: 10px;background:none; border: none; border-radius: 5px; cursor: pointer; animation: glow 1s infinite alternate;">Prediction:</strong>
-            {{ prediction_text|safe}}</p>
+        {% if prediction_text %}
+            <div class="map" id ="map" style = "width: 600px; height: 400px;"></div>
+        {% endif %}
+
+        <p><strong style="color: #2b66fa;padding: 10px;background:none; border: none; border-radius: 5px; cursor: pointer; animation: glow 1s infinite alternate;">Prediction:</strong>{{ prediction_text|safe }}</p>
         {% if significance is defined %}
         <p>Input values:</p>
-        <ul>
-            <li>Significance: {{ significance }}</li>
-            <li>Magnitude: {{ magnitude }}</li>
-            <li>Latitude: {{ latitude }}</li>
-            <li>Longitude: {{ longitude }}</li>
-            <li>Depth: {{ depth }}</li>
-        </ul>
+            <ul>
+                <li>Significance: {{ significance }}</li>
+                <li>Magnitude: {{ magnitude }}</li>
+                <li>Latitude: {{ latitude }}</li>
+                <li>Longitude: {{ longitude }}</li>
+                <li>Depth: {{ depth }}</li>
+            </ul>
         {% endif %}
     </div>
 
-    {% if flag %}
-        <div class="map" id ="map" style = "width: 600px; height: 400px;"></div>
-    {% endif %}
-    <!-- <script src = "https://cdn.leafletjs.com/leaflet-0.7.3/leaflet.js"></script> -->
     <script>
+            let mapOptions = {
+                center:['{{ latitude }}', '{{ longitude }}'],
+                zoom:10
+            }
+
+            let map = L.map('map' , mapOptions);
+
+            let layer = new L.TileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png');
+            map.addLayer(layer);
+
+            let marker = new L.Marker(['{{ latitude }}', '{{ longitude }}']);
+            marker.addTo(map);
+
         function toggleHelpDesk() {
-        var helpDeskInfo = document.getElementById("helpDeskInfo");
-        helpDeskInfo.style.display = (helpDeskInfo.style.display === "none") ? "block" : "none";
-        let mapOptions = {
-            center:['{{ latitude }}', '{{ longitude }}'],
-            zoom:10
+            const helpDeskInfo = document.getElementById("helpDeskInfo");
+            helpDeskInfo.style.display = (helpDeskInfo.style.display === "block") ? "none" : "block";
         }
-        
-        let map = new L.map('map' , mapOptions);
-
-        let layer = new L.TileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png');
-        map.addLayer(layer);
-
-        let marker = new L.Marker(['{{ latitude }}', '{{ longitude }}']);
-        marker.addTo(map);}
-        
     </script>
-
-
 </body>
 
 </html>
